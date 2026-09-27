@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verzauberter Herbstwald & Gespenster-Jagd</title>
+    <style>
+        :root {
+            --primary-color: #d97706;
+            --secondary-color: #b45309;
+            --text-color: #3b1805;
+            --card-bg: rgba(255, 251, 235, 0.92);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Schöne, kräftige und gemütliche Herbstfarben im Hintergrund */
+            background: linear-gradient(135deg, #7c2d12 0%, #b45309 50%, #78350f 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Herbstblätter Animation */
+        .leaf {
+            position: fixed;
+            top: -10%;
+            z-index: 1;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(120px) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-top: 30px;
+            z-index: 10;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #fef3c7;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+
+        p.subtitle {
+            font-size: 1.3rem;
+            color: #fed7aa;
+            margin-top: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 20px auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 3px solid #f59e0b;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            color: #9a3412;
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #fde68a;
+            padding-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #451a03;
+        }
+
+        /* Spiel Bereich */
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #0f172a, #1e1b4b);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid #d97706;
+            cursor: crosshair;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #78350f;
+            background: #fde68a;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .btn {
+            background-color: #ea580c;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
+        }
+
+        .btn:hover {
+            background-color: #c2410c;
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Gespenst Styling */
+        .ghost {
+            position: absolute;
+            font-size: 3.2rem;
+            cursor: pointer;
+            user-select: none;
+            animation: float-ghost 2s ease-in-out infinite alternate;
+            transition: transform 0.1s;
+        }
+
+        .ghost:hover {
+            transform: scale(1.25);
+        }
+
+        @keyframes float-ghost {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-12px); }
+        }
+
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .game-overlay h3 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+
+        .game-overlay p {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 1rem;
+            color: #fef3c7;
+            z-index: 10;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Herbstblätter im Hintergrund -->
+    <div class="leaf" style="left: 8%; animation-duration: 7s; font-size: 26px;">🍁</div>
+    <div class="leaf" style="left: 25%; animation-duration: 11s; font-size: 20px;">🍂</div>
+    <div class="leaf" style="left: 45%; animation-duration: 8s; font-size: 30px;">🍁</div>
+    <div class="leaf" style="left: 65%; animation-duration: 10s; font-size: 22px;">🍂</div>
+    <div class="leaf" style="left: 85%; animation-duration: 6s; font-size: 28px;">🍁</div>
+
+    <header>
+        <h1>Willkommen im verzauberten Herbstwald 🍂</h1>
+        <p class="subtitle">Genieße die gemütliche Jahreszeit mit bunten Blättern und einer spannenden Gespenster-Jagd!</p>
+    </header>
+
+    <div class="container">
+        <!-- Ausführliche Herbst-Karte -->
+        <div class="card">
+            <h2>Der Zauber des Herbstes</h2>
+            <p>Wenn die Tage kürzer werden und sich die Baumkronen in ein Meer aus Gold, Orange und Tiefrot verwandeln, beginnt die gemütlichste Zeit des Jahres. Der Herbst bringt eine ganz besondere Magie mit sich: Kühle Morgenluft, der Duft von nassem Laub und dampfender Tee auf dem Tisch.</p>
+            <p>Diese kleine Webseite ist dein persönlicher Zufluchtsort in diesem Herbstwald – programmiert als kreativer Start in die Welt des Webdesigns. Schaue dir an, wie die Blätter sanft vom Himmel rieseln, und teste dein Geschick bei der herbstlichen Gespenster-Jagd im Nebel!</p>
+        </div>
+
+        <!-- Spiel-Karte -->
+        <div class="card">
+            <h2>👻 Gespenster-Jagd im Nebelwald</h2>
+            <p style="margin-top: 0; margin-bottom: 15px; text-align: center;">In den alten Wäldern treiben im Herbst kleine Schabernack-Gespenster ihr Unwesen. Fange so viele wie du kannst, bevor die Zeit abläuft!</p>
+            
+            <div class="game-stats">
+                <div>Punkte: <span id="score">0</span></div>
+                <div>Zeit: <span id="timer">30</span>s</div>
+            </div>
+
+            <div id="game-container">
+                <div id="start-overlay" class="game-overlay">
+                    <h3>Bereit für die Geisterjagd?</h3>
+                    <p>Klicke auf den Button, um den Nebelwald zu betreten und die Gespenster zu fangen!</p>
+                    <button class="btn" onclick="startGame()">Spiel starten!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Erstellt mit ❤️ und ganz viel Herbststimmung. Viel Spaß beim Programmieren!
+    </footer>
+
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let gameInterval = null;
+        let ghostInterval = null;
+        let isPlaying = false;
+
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const gameContainer = document.getElementById('game-container');
+        const startOverlay = document.getElementById('start-overlay');
+
+        function startGame() {
+            // Spiel zurücksetzen
+            score = 0;
+            timeLeft = 30;
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft;
+            startOverlay.style.display = 'none';
+            isPlaying = true;
+
+            // Alte Gespenster entfernen
+            document.querySelectorAll('.ghost').forEach(g => g.remove());
+
+            // Timer starten
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+
+            // Regelmäßig Gespenster erzeugen
+            ghostInterval = setInterval(spawnGhost, 800);
+        }
+
+        function spawnGhost() {
+            if (!isPlaying) return;
+
+            const ghost = document.createElement('div');
+            ghost.classList.add('ghost');
+            ghost.innerHTML = '👻';
+
+            // Zufällige Position im Container
+            const maxX = gameContainer.clientWidth - 70;
+            const maxY = gameContainer.clientHeight - 70;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            ghost.style.left = randomX + 'px';
+            ghost.style.top = randomY + 'px';
+
+            // Klick-Ereignis zum Fangen
+            ghost.addEventListener('click', () => {
+                if (!isPlaying) return;
+                score += 10;
+                scoreDisplay.textContent = score;
+                ghost.remove();
+            });
+
+            gameContainer.appendChild(ghost);
+
+            // Gespenst verschwindet nach 1,8 Sekunden wieder von selbst
+            setTimeout(() => {
+                if (ghost.parentElement) {
+                    ghost.remove();
+                }
+            }, 1800);
+        }
+
+        function endGame() {
+            isPlaying = false;
+            clearInterval(gameInterval);
+            clearInterval(ghostInterval);
+
+            // Alle verbleibenden Gespenster entfernen
+            document.querySelectorAll('.ghost').forEach(g => g.remove());
+
+            // Endbildschirm anzeigen
+            startOverlay.style.display = 'flex';
+            startOverlay.innerHTML = `
+                <h3>Zeit ist um! 🎃</h3>
+                <p>Fantastisch gemacht! Du hast <strong>${score} Punkte</strong> im Herbstwald gesammelt.</p>
+                <button class="btn" onclick="startGame()">Noch einmal spielen</button>
+            `;
+        }
+    </script>
+</body>
+</html>
